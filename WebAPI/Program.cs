@@ -1,3 +1,11 @@
+using Application.Interfaces;
+using Application.Mappings;
+using Application.Services;
+using Domain.Entities;
+using Domain.Interfaces;
+using Infrastructure.Repositories;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.EnableAnnotations();
+    x.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "V1" });
+});
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddSingleton(AutoMapperConfig.Initialize());
 
 var app = builder.Build();
 
